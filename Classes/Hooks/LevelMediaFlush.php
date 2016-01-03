@@ -3,6 +3,7 @@ namespace Qbus\Qbcache\Hooks;
 
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 
 /**
  * LevelMediaFlush
@@ -54,10 +55,11 @@ class LevelMediaFlush implements \TYPO3\CMS\Core\SingletonInterface
             }
             */
 
-            $fileReference = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-                'uid_foreign',
+            $fileReference = BackendUtility::getRecord(
                 'sys_file_reference',
-                "tablenames = 'pages' AND fieldname = 'media' and table_local = 'sys_file' and uid = " . intval($id)
+                $id,
+                'uid_foreign',
+                "tablenames = 'pages' AND fieldname = 'media' AND table_local = 'sys_file'"
             );
 
             if ($fileReference) {
@@ -115,13 +117,5 @@ class LevelMediaFlush implements \TYPO3\CMS\Core\SingletonInterface
     protected function getCacheManager()
     {
         return GeneralUtility::makeInstance(\TYPO3\CMS\Core\Cache\CacheManager::class);
-    }
-
-    /**
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-     */
-    protected function getDatabaseConnection()
-    {
-        return $GLOBALS['TYPO3_DB'];
     }
 }

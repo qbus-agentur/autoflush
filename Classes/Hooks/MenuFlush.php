@@ -74,11 +74,7 @@ class MenuFlush
             }
 
             if ($changed) {
-                $page = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-                    'pid',
-                    'pages',
-                    'uid = ' . intval($id) . BackendUtility::deleteClause('pages')
-                );
+                $page = BackendUtility::getRecord('pages', $id, 'pid');
 
                 if ($page) {
                     $this->tags[] = 'menu_pid_' . intval($page['pid']);
