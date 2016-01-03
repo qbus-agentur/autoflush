@@ -1,9 +1,9 @@
 <?php
 namespace Qbus\Qbcache\Hooks;
 
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
 
 /**
  * MenuFlush – flush menu_pid_###PID### when navigation related page-field's change
@@ -32,7 +32,6 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
  *   }
  *
  * @author Benjamin Franzke <bfr@qbus.de>
- * @package qbcache
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
 class MenuFlush
@@ -100,7 +99,6 @@ class MenuFlush
             }
         }
     }
-
 
     /**
      * processDatamap_afterAllOperations

@@ -1,15 +1,14 @@
 <?php
 namespace Qbus\Qbcache\Hooks;
 
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
 
 /**
  * LevelMediaFlush
  *
  * @author Benjamin Franzke <bfr@qbus.de>
- * @package qbcache
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
 class LevelMediaFlush implements \TYPO3\CMS\Core\SingletonInterface

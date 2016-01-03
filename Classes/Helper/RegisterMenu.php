@@ -5,7 +5,6 @@ namespace Qbus\Qbcache\Helper;
  * RegisterMenu
  *
  * @author Benjamin Franzke <bfr@qbus.de>
- * @package qbcache
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
 class RegisterMenu implements \TYPO3\CMS\Core\SingletonInterface
