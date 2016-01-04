@@ -2,7 +2,7 @@
 
 $EM_CONF[$_EXTKEY] = array(
     'title' => 'Qbus Cache',
-    'description' => '',
+    'description' => 'Automatic cache flush for menus and levelmedia',
     'category' => 'backend',
     'author' => 'Benjamin Franzke',
     'author_email' => 'bfr@qbus.de',
@@ -20,13 +20,14 @@ $EM_CONF[$_EXTKEY] = array(
     'version' => '1.0.0',
     'constraints' => array(
         'depends' => array(
-            'extbase' => '6.0',
-            'fluid' => '6.0',
-            'typo3' => '6.0',
+            'typo3' => '6.2.0-7.99.99',
         ),
         'conflicts' => array(
         ),
         'suggests' => array(
         ),
+    ),
+    'autoload' => array(
+        'psr-4' => array('Qbus\\Qbcache\\' => 'Classes')
     ),
 );
