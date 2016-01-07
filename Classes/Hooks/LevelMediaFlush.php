@@ -1,5 +1,5 @@
 <?php
-namespace Qbus\Qbcache\Hooks;
+namespace Qbus\Autoflush\Hooks;
 
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;

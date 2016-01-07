@@ -1,7 +1,7 @@
 <?php
 
 $EM_CONF[$_EXTKEY] = array(
-    'title' => 'Qbus Cache',
+    'title' => 'Automatic cache flush',
     'description' => 'Automatic cache flush for menus and levelmedia',
     'category' => 'backend',
     'author' => 'Benjamin Franzke',
@@ -28,6 +28,6 @@ $EM_CONF[$_EXTKEY] = array(
         ),
     ),
     'autoload' => array(
-        'psr-4' => array('Qbus\\Qbcache\\' => 'Classes')
+        'psr-4' => array('Qbus\\Autoflush\\' => 'Classes')
     ),
 );

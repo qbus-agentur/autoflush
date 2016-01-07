@@ -1,5 +1,5 @@
 {
-    "name": "qbus/qbcache",
+    "name": "qbus/autoflush",
     "type": "typo3-cms-extension",
     "description": "Automatic cache flush for menus and levelmedia",
     "keywords": [
@@ -21,11 +21,11 @@
     },
     "autoload": {
         "psr-4": {
-            "Qbus\\Qbcache\\": "Classes"
+            "Qbus\\Autoflush\\": "Classes"
         }
     },
     "replace": {
-        "qbcache": "self.version",
-        "typo3-ter/qbcache": "self.version"
+        "autoflush": "self.version",
+        "typo3-ter/autoflush": "self.version"
     }
 }

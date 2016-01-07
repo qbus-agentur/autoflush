@@ -1,5 +1,5 @@
 <?php
-namespace Qbus\Qbcache\Hooks;
+namespace Qbus\Autoflush\Hooks;
 
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
@@ -23,9 +23,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *       expAll = 1
  *
  *       # This will add a page cache tag for every rendered (sub)menu:
- *       # menu_pid_###PID### which is flushed by Qbus\Qbcache\Hooks\MenuFlush
+ *       # menu_pid_###PID### which is flushed by Qbus\Autoflush\Hooks\MenuFlush
  *       # if a child page of that pid is added/changed/removed
- *       IProcFunc = Qbus\Qbcache\Helper\RegisterMenu->register
+ *       IProcFunc = Qbus\Autoflush\Helper\RegisterMenu->register
  *     }
  *
  *     2 < .1

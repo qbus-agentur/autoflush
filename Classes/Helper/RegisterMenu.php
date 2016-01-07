@@ -1,5 +1,5 @@
 <?php
-namespace Qbus\Qbcache\Helper;
+namespace Qbus\Autoflush\Helper;
 
 /**
  * RegisterMenu
