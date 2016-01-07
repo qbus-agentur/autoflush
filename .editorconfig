@@ -15,7 +15,9 @@ tab_width = 8
 [**.html]
 indent_style = tab
 tab_width = 8
+indent_size = 8
 
 [**.xlf]
 indent_style = tab
 tab_width = 8
+indent_size = 8
