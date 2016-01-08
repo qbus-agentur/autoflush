@@ -29,6 +29,8 @@ class TablePidFlush
      *     stdWrap.addPageCacheTags = tt_content_pid_30
      * }
      *
+     * TODO: Support move from one pid to another
+     *
      * @param  array       $params
      * @param  DataHandler $dataHandler
      * @return void
