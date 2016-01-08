@@ -42,6 +42,7 @@ class AutoflushCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comma
             // But this may still happen, when the admin cleared all caches in install tool
             // (were we can't hook into)
             BackendUtility::storeHash($hash, $current, 'AUTOFLUSH_LAST_RUN');
+
             return;
         }
 

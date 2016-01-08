@@ -23,7 +23,8 @@ class StoreLastFlush
     public function clearCachePostProc(array $params, DataHandler $dataHandler)
     {
         $hash = md5('autoflush_cachecommand_publish_pages_last_run');
-        if (BackendUtility::getHash($hash) === null)
+        if (BackendUtility::getHash($hash) === null) {
             BackendUtility::storeHash($hash, time(), 'AUTOFLUSH_LAST_RUN');
+        }
     }
 }
