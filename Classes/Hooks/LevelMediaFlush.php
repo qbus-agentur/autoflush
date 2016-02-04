@@ -58,7 +58,7 @@ class LevelMediaFlush implements \TYPO3\CMS\Core\SingletonInterface
                 'sys_file_reference',
                 $id,
                 'uid_foreign',
-                "tablenames = 'pages' AND fieldname = 'media' AND table_local = 'sys_file'"
+                " AND tablenames = 'pages' AND fieldname = 'media' AND table_local = 'sys_file'"
             );
 
             if ($fileReference) {
