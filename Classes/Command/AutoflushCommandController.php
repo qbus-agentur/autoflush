@@ -1,8 +1,6 @@
 <?php
 namespace Qbus\Autoflush\Command;
 
-use TYPO3\CMS\Backend\Utility\BackendUtility;
-
 /**
  * AutoflushCommandController
  *
@@ -11,10 +9,17 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
  */
 class AutoflushCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\CommandController
 {
+    const REGISTRY_KEY = 'cachecommand_publish_pages_last_run';
+
     /**
      * @var \TYPO3\CMS\Core\Cache\CacheManager
      */
     protected $cacheManager;
+
+    /**
+     * @var \TYPO3\CMS\Core\Registry
+     */
+    protected $registry;
 
     /**
      * @param  \TYPO3\CMS\Core\Cache\CacheManager $cacheManager
@@ -26,6 +31,16 @@ class AutoflushCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comma
     }
 
     /**
+     * @param  \TYPO3\CMS\Core\Registry $registry
+     * @return void
+     */
+    public function injectRegistry(\TYPO3\CMS\Core\Registry $registry)
+    {
+        $this->registry = $registry;
+    }
+
+
+    /**
      * Flush menu cache for pages that were automatically published
      * between two runs of this command
      *
@@ -33,18 +48,8 @@ class AutoflushCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comma
      */
     public function clearMenuForPulishedPagesCommand()
     {
-        $hash = md5('autoflush_cachecommand_publish_pages_last_run');
         $current = time();
-
-        $last = BackendUtility::getHash($hash);
-        if (!$last) {
-            // We've got a StoreLastFlush hook, which should prevent this situation.
-            // But this may still happen, when the admin cleared all caches in install tool
-            // (were we can't hook into)
-            BackendUtility::storeHash($hash, $current, 'AUTOFLUSH_LAST_RUN');
-
-            return;
-        }
+        $last = $this->registry->get('tx_autoflush', self::REGISTRY_KEY, $current);
 
         $pages = $this->findPagesPublishedBetween($last, $current);
         $pids = array();
@@ -58,7 +63,7 @@ class AutoflushCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comma
             $this->cacheManager->flushCachesInGroupByTag('pages', 'menu_pid_' . $pid);
         }
 
-        BackendUtility::storeHash($hash, $current, 'AUTOFLUSH_LAST_RUN');
+        $this->registry->set('tx_autoflush', self::REGISTRY_KEY, $current);
     }
 
     /**
