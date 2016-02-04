@@ -164,12 +164,4 @@ class MenuFlush
     {
         return GeneralUtility::makeInstance(\TYPO3\CMS\Core\Cache\CacheManager::class);
     }
-
-    /**
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-     */
-    protected function getDatabaseConnection()
-    {
-        return $GLOBALS['TYPO3_DB'];
-    }
 }
