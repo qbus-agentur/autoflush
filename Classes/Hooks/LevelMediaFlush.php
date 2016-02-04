@@ -100,6 +100,9 @@ class LevelMediaFlush implements \TYPO3\CMS\Core\SingletonInterface
         foreach ($cumulatedPageIds as $pageId) {
             $cacheManager->flushCachesInGroupByTag('pages', 'pageId_' . $pageId);
         }
+
+        /* Since this hook is called multiple times, clear the pageIds to not clear twice */
+        $this->pageIdsToFlushRecursively = array();
     }
 
     /**
