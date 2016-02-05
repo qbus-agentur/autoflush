@@ -39,7 +39,6 @@ class AutoflushCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comma
         $this->registry = $registry;
     }
 
-
     /**
      * Flush menu cache for pages that were automatically published
      * between two runs of this command
