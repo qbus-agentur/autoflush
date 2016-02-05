@@ -129,7 +129,7 @@ class MenuFlush
     public function processCmdmap_deleteAction(
         $table,
         $id,
-        $record,
+        array $record,
         &$recordWasDeleted,
         DataHandler $dataHandler
     ) {
