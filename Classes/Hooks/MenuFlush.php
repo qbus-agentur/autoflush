@@ -130,10 +130,10 @@ class MenuFlush
         $table,
         $id,
         $record,
-        $recordWasDeleted,
+        &$recordWasDeleted,
         DataHandler $dataHandler
     ) {
-        if ($table === 'pages' && $recordWasDeleted) {
+        if ($table === 'pages') {
             if (isset($record['hidden']) && $record['hidden']) {
                 return;
             }
