@@ -16,11 +16,11 @@ Configuration
 -------------
 
 For the basic functionality no configuration is required. Just install the extension and
-stop to use the "flush frontend caches" button whenever you rename, delete, hide or add a page.
+stop using the "flush frontend caches" button whenever you rename, delete, hide or add a page.
 
 .. code-block:: bash
 
-    typo3/cli_dispath.phpsh extbase extension:install nginx_cache
+    typo3/cli_dispath.phpsh extbase extension:install autoflush
 
 Cache flush for time-based page publishing
 ------------------------------------------
@@ -45,3 +45,4 @@ TODO
 - File handling (add, move, delete, edit metadata) – you may use EXT:cacheopt for now
 - Category based menus
 - proper support for moving pages from a menu tree to another tree which is not rendered on the same page
+- create menu_pid_ tags for pages that could eventually render a submenu (but do not have child pages yet)
