@@ -61,7 +61,7 @@ class MenuFlush
         if ($status === 'update' && $table === 'pages') {
 
             /* TODO: Move this list to ext_conf_template.txt */
-            $fieldsToCheck = 'title, hidden, nav_title, nav_hide, fe_group, starttime, endtime';
+            $fieldsToCheck = 'title, hidden, nav_title, nav_hide, doktype, alias, target, url_scheme, sorting, fe_group, starttime, endtime';
             $fieldsToCheck = GeneralUtility::trimExplode(',', $fieldsToCheck, true);
 
             $changed = false;
