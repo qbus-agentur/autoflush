@@ -44,5 +44,4 @@ TODO
 
 - File handling (add, move, delete, edit metadata) – you may use EXT:cacheopt for now
 - Category based menus
-- proper support for moving pages from a menu tree to another tree which is not rendered on the same page
 - create menu_pid_ tags for pages that could eventually render a submenu (but do not have child pages yet)
