@@ -100,25 +100,6 @@ class MenuFlush
         }
     }
 
-    /**
-     * processDatamap_afterAllOperations
-     *
-     * @param DataHandler $dataHandler
-     */
-    public function processDatamap_afterAllOperations(DataHandler $dataHandler)
-    {
-        if (empty($this->tags)) {
-            return;
-        }
-
-        $cacheManager = $this->getCacheManager();
-
-        $this->tags = array_unique($this->tags);
-        foreach ($this->tags as $tag) {
-            $cacheManager->flushCachesInGroupByTag('pages', $tag);
-        }
-    }
-
     /*
      * @param string      $table
      * @param int         $id
@@ -147,6 +128,89 @@ class MenuFlush
                 $cacheManager->flushCachesInGroupByTag('pages', 'menu_pid_' .  intval($record['pid']));
             }
         }
+    }
+
+    /**
+     * @param string $command
+     * @param string $table
+     * @param int    $id
+     * @param string $value
+     * @param DataHandler $dataHandler
+     * @param array $pasteUpdate
+     * @return void
+     */
+    public function processCmdmap_preProcess(
+        $command,
+        $table,
+        $id,
+        $value,
+        DataHandler $dataHandler,
+        $pasteUpdate
+    ) {
+        if ($table !== 'pages') {
+            return;
+        }
+
+        switch ($command) {
+        case 'move':
+            /* Flush the current pid */
+
+            $page = BackendUtility::getRecord('pages', $id, 'pid');
+            if ($page) {
+                $this->tags[] = 'menu_pid_' . intval($page['pid']);
+            }
+
+            /* Flush the dest pid.
+             * $value <0: move behind record with uid=abs($value); >=0 means move to page with uid=$value */
+            if ($value < 0) {
+                $page = BackendUtility::getRecord('pages', abs($value), 'pid');
+                if ($page) {
+                    $this->tags[] = 'menu_pid_' . intval($page['pid']);
+                }
+            } else {
+                $this->tags[] = 'menu_pid_' . intval($value);
+            }
+            break;
+        }
+    }
+
+    /*
+     * processCmdmap_afterFinish
+     *
+     * @param DataHandler $dataHandler
+     */
+    public function processCmdmap_afterFinish(DataHandler $dataHandler)
+    {
+        $this->flushTags();
+    }
+
+    /**
+     * processDatamap_afterAllOperations
+     *
+     * @param DataHandler $dataHandler
+     */
+    public function processDatamap_afterAllOperations(DataHandler $dataHandler)
+    {
+        $this->flushTags();
+    }
+
+    /**
+     * Flush the tags in $this->tags
+     */
+    protected function flushTags()
+    {
+        if (empty($this->tags)) {
+            return;
+        }
+
+        $cacheManager = $this->getCacheManager();
+
+        $this->tags = array_unique($this->tags);
+        foreach ($this->tags as $tag) {
+            $cacheManager->flushCachesInGroupByTag('pages', $tag);
+        }
+
+        $this->tags = array();
     }
 
     /**
