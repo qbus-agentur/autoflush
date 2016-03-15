@@ -131,12 +131,12 @@ class MenuFlush
     }
 
     /**
-     * @param string $command
-     * @param string $table
-     * @param int    $id
-     * @param string $value
-     * @param DataHandler $dataHandler
-     * @param array $pasteUpdate
+     * @param  string      $command
+     * @param  string      $table
+     * @param  int         $id
+     * @param  string      $value
+     * @param  DataHandler $dataHandler
+     * @param  array       $pasteUpdate
      * @return void
      */
     public function processCmdmap_preProcess(
@@ -154,14 +154,14 @@ class MenuFlush
         switch ($command) {
         case 'move':
             /* Flush the current pid */
-
             $page = BackendUtility::getRecord('pages', $id, 'pid');
             if ($page) {
                 $this->tags[] = 'menu_pid_' . intval($page['pid']);
             }
 
             /* Flush the dest pid.
-             * $value <0: move behind record with uid=abs($value); >=0 means move to page with uid=$value */
+             * $value <0   move behind record with uid=abs($value)
+             * $value >=0  move to page with uid=$value */
             if ($value < 0) {
                 $page = BackendUtility::getRecord('pages', abs($value), 'pid');
                 if ($page) {
