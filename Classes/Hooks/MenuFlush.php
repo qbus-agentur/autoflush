@@ -58,8 +58,11 @@ class MenuFlush
         &$fields,
         DataHandler $dataHandler
     ) {
-        if ($status === 'update' && $table === 'pages') {
+        if (!in_array($table, ['pages', 'pages_language_overlay'])) {
+            return;
+        }
 
+        if ($status === 'update') {
             /* TODO: Move this list to ext_conf_template.txt */
             $fieldsToCheck = 'title, hidden, nav_title, nav_hide, doktype, alias, target, url_scheme, sorting, fe_group, starttime, endtime';
             $fieldsToCheck = GeneralUtility::trimExplode(',', $fieldsToCheck, true);
@@ -73,11 +76,7 @@ class MenuFlush
             }
 
             if ($changed) {
-                $page = BackendUtility::getRecord('pages', $id, 'pid');
-
-                if ($page) {
-                    $this->tags[] = 'menu_pid_' . intval($page['pid']);
-                }
+                $this->tags[] = 'menu_pid_' . intval($this->getParentPage($table, $id, $fields));
             }
 
             if (isset($fields['extend_to_subpages'])) {
@@ -85,7 +84,7 @@ class MenuFlush
             }
         }
 
-        if ($status === 'new' && $table == 'pages') {
+        if ($status === 'new') {
             if (isset($fields['hidden']) && $fields['hidden']) {
                 return;
             }
@@ -95,7 +94,7 @@ class MenuFlush
             }
 
             if (isset($fields['pid'])) {
-                $this->tags[] = 'menu_pid_' . intval($fields['pid']);
+                $this->tags[] = 'menu_pid_' . intval($this->getParentPage($table, $id, $fields));
             }
         }
     }
@@ -114,19 +113,21 @@ class MenuFlush
         &$recordWasDeleted,
         DataHandler $dataHandler
     ) {
-        if ($table === 'pages') {
-            if (isset($record['hidden']) && $record['hidden']) {
-                return;
-            }
+        if (!in_array($table, ['pages', 'pages_language_overlay'])) {
+            return;
+        }
 
-            if (isset($record['nav_hide']) && $record['nav_hide']) {
-                return;
-            }
+        if (isset($record['hidden']) && $record['hidden']) {
+            return;
+        }
 
-            if (isset($record['pid'])) {
-                $cacheManager = $this->getCacheManager();
-                $cacheManager->flushCachesInGroupByTag('pages', 'menu_pid_' .  intval($record['pid']));
-            }
+        if (isset($record['nav_hide']) && $record['nav_hide']) {
+            return;
+        }
+
+        if (isset($record['pid'])) {
+            $cacheManager = $this->getCacheManager();
+            $cacheManager->flushCachesInGroupByTag('pages', 'menu_pid_' .  intval($this->getParentPage($table, $id, $record)));
         }
     }
 
@@ -211,6 +212,42 @@ class MenuFlush
         }
 
         $this->tags = array();
+    }
+
+    /**
+     * Get parent page for $table which may be 'pages' or 'pages_language_overlay'.
+     *
+     * For 'pages_language_overlay' technically the grandparent page is retrieved.
+     * $record is optional, providing it may save a SQL Query
+     *
+     * @param  string   $table
+     * @param  int      $id
+     * @param  array    $record
+     * @return int|null
+     */
+    protected function getParentPage($table, $id, $record = array())
+    {
+        if (!isset($record['pid'])) {
+            $record = BackendUtility::getRecord($table, $id, 'pid');
+            if (!$record) {
+                /* FIXME: what to do? */
+                return null;
+            }
+        }
+
+        if ($table === 'pages') {
+            return $record['pid'];
+        }
+
+        if ($table === 'pages_language_overlay') {
+            $page = BackendUtility::getRecord('pages', $record['pid'], 'pid');
+            if ($page) {
+                return $page['pid'];
+            }
+        }
+
+        /* FIXME: what to do? */
+        return null;
     }
 
     /**
