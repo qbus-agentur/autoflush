@@ -85,7 +85,7 @@ class MenuFlush
             }
         }
 
-        if ($status === 'new') {
+        if ($status === 'new' && $table == 'pages') {
             if (isset($fields['hidden']) && $fields['hidden']) {
                 return;
             }
