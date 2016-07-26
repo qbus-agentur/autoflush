@@ -9,27 +9,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * MenuFlush – flush menu_pid_###PID### when navigation related page-field's change
  *
  * The cache tag menu_pid_###PID### needs to be added to each page rendering menu's.
- * Therefore a helper exists which you can add to your typoscript setup using IProcFunc.
- *
- * Example:
- *   lib.navigation = HMENU
- *   lib.navigation {
- *     special = directory
- *     special.value = 1
- *
- *     1 = TMENU
- *     1 {
- *       wrap = <ul class="nav">|</ul>
- *       expAll = 1
- *
- *       # This will add a page cache tag for every rendered (sub)menu:
- *       # menu_pid_###PID### which is flushed by Qbus\Autoflush\Hooks\MenuFlush
- *       # if a child page of that pid is added/changed/removed
- *       IProcFunc = Qbus\Autoflush\Helper\RegisterMenu->register
- *     }
- *
- *     2 < .1
- *   }
+ * That task is currently done by \Qbus\Autoflush\Hooks\Frontend\RegisterMenuTags.
  *
  * @author Benjamin Franzke <bfr@qbus.de>
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
