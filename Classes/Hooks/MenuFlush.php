@@ -44,7 +44,7 @@ class MenuFlush
 
         if ($status === 'update') {
             /* TODO: Move this list to ext_conf_template.txt */
-            $fieldsToCheck = 'title, hidden, nav_title, nav_hide, doktype, alias, target, url_scheme, sorting, fe_group, starttime, endtime, tx_realurl_pathsegment';
+            $fieldsToCheck = 'title, hidden, nav_title, nav_hide, doktype, alias, target, url_scheme, shortcut, sorting, fe_group, starttime, endtime, tx_realurl_pathsegment';
             $fieldsToCheck = GeneralUtility::trimExplode(',', $fieldsToCheck, true);
 
             $changed = false;
