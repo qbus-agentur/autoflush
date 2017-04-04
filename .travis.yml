@@ -1,0 +1,26 @@
+language: php
+
+php:
+  - 7
+
+env:
+  - TYPO3_VERSION="dev-master"
+
+sudo: false
+
+cache:
+  directories:
+    - $HOME/.composer/cache
+
+before_install:
+  - phpenv config-rm xdebug.ini
+  - composer self-update
+  - composer --version
+
+before_script:
+  - make install-test-environment
+
+script:
+  - make -j4 test-unit
+  - make -j4 test-lint
+  - make -j4 test-functional

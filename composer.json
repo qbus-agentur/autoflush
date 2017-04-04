@@ -24,8 +24,32 @@
             "Qbus\\Autoflush\\": "Classes"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Qbus\\Autoflush\\Tests\\": "Tests"
+        }
+    },
     "replace": {
         "autoflush": "self.version",
         "typo3-ter/autoflush": "self.version"
+    },
+    "require-dev": {
+        "typo3/cms": "@dev",
+        "typo3/testing-framework": "@dev"
+    },
+    "config": {
+        "vendor-dir": ".build/vendor"
+    },
+    "extra": {
+        "typo3/cms": {
+            "cms-package-dir": "{$vendor-dir}/typo3/cms",
+            "web-dir": ".build/web"
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": [
+            "mkdir -p .build/web/typo3conf/ext/",
+            "[ -L .build/web/typo3conf/ext/autoflush ] || ln -snvf ../../../../. .build/web/typo3conf/ext/autoflush"
+        ]
     }
 }
