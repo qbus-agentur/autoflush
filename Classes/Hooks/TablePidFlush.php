@@ -1,6 +1,7 @@
 <?php
 namespace Qbus\Autoflush\Hooks;
 
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -38,7 +39,16 @@ class TablePidFlush
     public function clearCachePostProc(array $params, DataHandler $dataHandler)
     {
         if (isset($params['table']) && isset($params['uid_page'])) {
-            $tag = $params['table'] . '_pid_' . $params['uid_page'];
+            $pid = $params['uid_page'];
+
+            if ($params['table'] === 'pages') {
+                $record = BackendUtility::getRecord('pages', $params['uid'], 'pid');
+                if ($record && isset($record['pid'])) {
+                    $pid = $record['pid'];
+                }
+            }
+
+            $tag = $params['table'] . '_pid_' . $pid;
             $this->getCacheManager()->flushCachesInGroupByTag('pages', $tag);
         }
     }
