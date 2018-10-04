@@ -1,6 +1,9 @@
 <?php
 namespace Qbus\Autoflush\Command;
 
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * AutoflushCommandController
  *
@@ -68,9 +71,9 @@ class AutoflushCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comma
     /**
      * Find publish changes in range
      */
-    protected function findPagesPublishedBetween($a, $b)
+    protected function findPagesPublishedBetweenLegacy($a, $b)
     {
-        $rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
+        $rows = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
             'pid, uid',
             'pages',
             '(' . $a . ' < starttime and ' . $b . ' >= starttime) or ' .
@@ -81,14 +84,38 @@ class AutoflushCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comma
             return $rows;
         }
 
-        return $r;
+        return [];
     }
 
     /**
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+     * Find publish changes in range
      */
-    protected function getDatabaseConnection()
+    protected function findPagesPublishedBetween($a, $b)
     {
-        return $GLOBALS['TYPO3_DB'];
+        if (!class_exists(ConnectionPool::class)) {
+            return $this->findPagesPublishedBetweenLegacy($a, $b);
+        }
+        $qb = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('pages');
+
+        $result = $qb
+            ->select('*')
+            ->from('pages', 'p')
+            ->where(
+                $qb->expr()->orX(
+                    $qb->expr()->andX(
+                        $qb->expr()->gte('p.starttime', ':start'),
+                        $qb->expr()->lt('p.starttime', ':end')
+                    ),
+                    $qb->expr()->andX(
+                        $qb->expr()->gte('p.endtime', ':start'),
+                        $qb->expr()->lt('p.endtime', ':end')
+                    )
+                )
+            )
+            ->setParameter('start', $a)
+            ->setParameter('end', $b)
+            ->execute();
+
+        return $result->fetchAll();
     }
 }
