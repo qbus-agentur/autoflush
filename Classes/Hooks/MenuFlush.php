@@ -144,7 +144,7 @@ class MenuFlush
              * $value <0   move behind record with uid=abs($value)
              * $value >=0  move to page with uid=$value */
             if ($value < 0) {
-                $page = BackendUtility::getRecord('pages', abs($value), 'pid');
+                $page = BackendUtility::getRecord('pages', -$value, 'pid');
                 if ($page) {
                     $this->tags[] = 'menu_pid_' . intval($page['pid']);
                 }
