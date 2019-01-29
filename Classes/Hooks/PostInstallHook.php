@@ -1,7 +1,6 @@
 <?php
 namespace Qbus\Autoflush\Hooks;
 
-use Qbus\Autoflush\Command\AutoflushCommandController;
 use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extensionmanager\Utility\InstallUtility;
