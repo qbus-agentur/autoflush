@@ -1,16 +1,21 @@
 <?php
 namespace Qbus\Autoflush\Command;
 
+use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * AutoflushCommandController
+ * ClearMenuForPulishedPagesCommand
  *
  * @author Benjamin Franzke <bfr@qbus.de>
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class AutoflushCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\CommandController
+class ClearMenuForPulishedPagesCommand extends Command
 {
     const REGISTRY_KEY = 'cachecommand_publish_pages_last_run';
 
@@ -25,30 +30,33 @@ class AutoflushCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comma
     protected $registry;
 
     /**
-     * @param  \TYPO3\CMS\Core\Cache\CacheManager $cacheManager
-     * @return void
+     * @param string $commandName
+     * @param CacheManager $cacheManager
+     * @param Registry $registry
      */
-    public function injectCacheManager(\TYPO3\CMS\Core\Cache\CacheManager $cacheManager)
+    public function __construct(string $name = null, CacheManager $cacheManager = null, Registry $registry = null)
     {
-        $this->cacheManager = $cacheManager;
+        $this->cacheManager = $registry ?? GeneralUtility::makeInstance(CacheManager::class);
+        $this->registry = $registry ?? GeneralUtility::makeInstance(Registry::class);
+        parent::__construct($name);
     }
 
     /**
-     * @param  \TYPO3\CMS\Core\Registry $registry
+     * Defines the description for this command
      * @return void
      */
-    public function injectRegistry(\TYPO3\CMS\Core\Registry $registry)
+    protected function configure()
     {
-        $this->registry = $registry;
+        $this->setDescription('Flushes menu cache for pages that were automatically published');
     }
 
     /**
      * Flush menu cache for pages that were automatically published
      * between two runs of this command
      *
-     * @return void
+     * @inheritdoc
      */
-    public function clearMenuForPulishedPagesCommand()
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
         $current = time();
         $last = $this->registry->get('tx_autoflush', self::REGISTRY_KEY, $current);
@@ -70,31 +78,12 @@ class AutoflushCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Comma
 
     /**
      * Find publish changes in range
-     */
-    protected function findPagesPublishedBetweenLegacy($a, $b)
-    {
-        $rows = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-            'pid, uid',
-            'pages',
-            '(' . $a . ' < starttime and ' . $b . ' >= starttime) or ' .
-            '(' . $a . ' < endtime   and ' . $b . ' >= endtime )'
-        );
-
-        if ($rows) {
-            return $rows;
-        }
-
-        return [];
-    }
-
-    /**
-     * Find publish changes in range
+     *
+     * @param string|int $a
+     * @param string|int $b
      */
     protected function findPagesPublishedBetween($a, $b)
     {
-        if (!class_exists(ConnectionPool::class)) {
-            return $this->findPagesPublishedBetweenLegacy($a, $b);
-        }
         $qb = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('pages');
 
         $result = $qb

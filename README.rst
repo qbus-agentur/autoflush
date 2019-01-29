@@ -32,7 +32,7 @@ references (menus) to pages that are published by time.
 
 .. code-block:: bash
 
-    typo3/cli_dispath.phpsh extbase autoflush:clearmenuforpulishedpages
+    typo3/sysext/core/bin/typo3 autoflush:clearmenuforpulishedpages
 
 The command will flush references for new/expired pages since the last
 and the current run of the command. Therefore you should run this command
