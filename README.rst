@@ -42,6 +42,5 @@ frequently to reduce the time where menu's are out-of-date.
 TODO
 ----
 
-- File handling (add, move, delete, edit metadata) – you may use EXT:cacheopt for now
 - Category based menus
 - create menu_pid\_ tags for pages that could eventually render a submenu (but do not have child pages yet)
