@@ -62,26 +62,19 @@ class RegisterMenuTags implements AbstractMenuFilterPagesHookInterface, Singleto
      */
     public function getMenuCriterion($conf)
     {
-        if (isset($conf['special'])) {
-            switch ($conf['special']) {
-            case 'directory':
-            case 'browse':
-            case 'rootline':
-                return 'pid';
+        $mapping = [
+            'directory' => 'pid',
+            'browse' => 'pid',
+            'rootline' => 'pid',
+            'list' => 'uid',
+            'updated' => 'uid',
+            'categories' => 'category',
+            'keywords' => 'keywords',
+            'language' => 'language',
+        ];
 
-            case 'list':
-            case 'updated':
-                return 'uid';
-
-            case 'categories':
-                return 'category';
-
-            case 'keywords':
-                return 'keywords';
-
-            case 'language':
-                return 'language';
-            }
+        if (isset($conf['special']) && isset($mapping[$conf['special']])) {
+            return $mapping[$conf['special']];
         }
 
         /* If no special is given, it's a pid-based rendering */
