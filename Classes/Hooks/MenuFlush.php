@@ -22,6 +22,78 @@ class MenuFlush
     protected $tags = array();
 
     /**
+     * @param  string      $table
+     * @param  int|string  $id
+     * @param  array       $fields
+     * @return void
+     */
+    protected function onUpdate(string $table, $id, array $fields)
+    {
+        /* TODO: Move this list to ext_conf_template.txt */
+        $fieldsToCheck = 'title, hidden, nav_title, nav_hide, doktype, alias, target, url_scheme, shortcut, shortcut_mode, sorting, fe_group, starttime, endtime, tx_realurl_pathsegment';
+        $fieldsToCheck = GeneralUtility::trimExplode(',', $fieldsToCheck, true);
+
+        $changed = false;
+        foreach ($fieldsToCheck as $field) {
+            if (isset($fields[$field])) {
+                $changed = true;
+                break;
+            }
+        }
+
+        if ($changed) {
+            $this->tags[] = 'menu_pid_' . intval($this->getParentPage($table, $id, $fields));
+        }
+
+        if (isset($fields['extend_to_subpages'])) {
+            // TODO: generate recursive tree list and add cache tags for all of them.
+        }
+    }
+
+    /**
+     * @param  string      $table
+     * @param  int|string  $id
+     * @param  array       $fields
+     * @return void
+     */
+    protected function onAdd(string $table, $id, array $fields)
+    {
+        if (isset($fields['hidden']) && $fields['hidden']) {
+            return;
+        }
+
+        if (isset($fields['nav_hide']) && $fields['nav_hide']) {
+            return;
+        }
+
+        if (isset($fields['pid'])) {
+            $this->tags[] = 'menu_pid_' . intval($this->getParentPage($table, $id, $fields));
+        }
+    }
+
+    /**
+     * @param  string  $table
+     * @param  int     $id
+     * @param  array   $record
+     * @return void
+     */
+    protected function onDelete(string $table, $id, array $record)
+    {
+        if (isset($record['hidden']) && $record['hidden']) {
+            return;
+        }
+
+        if (isset($record['nav_hide']) && $record['nav_hide']) {
+            return;
+        }
+
+        if (isset($record['pid'])) {
+            $cacheManager = $this->getCacheManager();
+            $cacheManager->flushCachesInGroupByTag('pages', 'menu_pid_' . intval($this->getParentPage($table, $id, $record)));
+        }
+    }
+
+    /**
      * Hook executed after the DataHandler performed one database operation
      *
      * @param  string      $status
@@ -42,40 +114,13 @@ class MenuFlush
             return;
         }
 
-        if ($status === 'update') {
-            /* TODO: Move this list to ext_conf_template.txt */
-            $fieldsToCheck = 'title, hidden, nav_title, nav_hide, doktype, alias, target, url_scheme, shortcut, shortcut_mode, sorting, fe_group, starttime, endtime, tx_realurl_pathsegment';
-            $fieldsToCheck = GeneralUtility::trimExplode(',', $fieldsToCheck, true);
-
-            $changed = false;
-            foreach ($fieldsToCheck as $field) {
-                if (isset($fields[$field])) {
-                    $changed = true;
-                    break;
-                }
-            }
-
-            if ($changed) {
-                $this->tags[] = 'menu_pid_' . intval($this->getParentPage($table, $id, $fields));
-            }
-
-            if (isset($fields['extend_to_subpages'])) {
-                // TODO: generate recursive tree list and add cache tags for all of them.
-            }
-        }
-
-        if ($status === 'new') {
-            if (isset($fields['hidden']) && $fields['hidden']) {
-                return;
-            }
-
-            if (isset($fields['nav_hide']) && $fields['nav_hide']) {
-                return;
-            }
-
-            if (isset($fields['pid'])) {
-                $this->tags[] = 'menu_pid_' . intval($this->getParentPage($table, $id, $fields));
-            }
+        switch ($status) {
+        case 'update':
+            $this->onUpdate($table, $id, $fields);
+            break;
+        case 'new':
+            $this->onAdd($table, $id, $fields);
+            break;
         }
     }
 
@@ -97,18 +142,7 @@ class MenuFlush
             return;
         }
 
-        if (isset($record['hidden']) && $record['hidden']) {
-            return;
-        }
-
-        if (isset($record['nav_hide']) && $record['nav_hide']) {
-            return;
-        }
-
-        if (isset($record['pid'])) {
-            $cacheManager = $this->getCacheManager();
-            $cacheManager->flushCachesInGroupByTag('pages', 'menu_pid_' . intval($this->getParentPage($table, $id, $record)));
-        }
+        $this->onDelete($table, $id, $record);
     }
 
     /**
