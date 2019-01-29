@@ -56,7 +56,7 @@ class LevelMediaFlush implements \TYPO3\CMS\Core\SingletonInterface
 
             $fileReference = BackendUtility::getRecord(
                 'sys_file_reference',
-                $id,
+                intval($id),
                 'uid_foreign',
                 " AND tablenames = 'pages' AND fieldname = 'media' AND table_local = 'sys_file'"
             );

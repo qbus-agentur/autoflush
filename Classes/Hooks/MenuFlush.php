@@ -201,14 +201,14 @@ class MenuFlush
      * $record is optional, providing it may save a SQL Query
      *
      * @param  string   $table
-     * @param  int      $id
+     * @param  int|string      $id
      * @param  array    $record
      * @return int|null
      */
     protected function getParentPage($table, $id, $record = array())
     {
         if (!isset($record['pid'])) {
-            $record = BackendUtility::getRecord($table, $id, 'pid');
+            $record = BackendUtility::getRecord($table, intval($id), 'pid');
             if (!$record) {
                 /* FIXME: what to do? */
                 return null;
