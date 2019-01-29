@@ -14,6 +14,8 @@ use TYPO3\CMS\Extensionmanager\Utility\InstallUtility;
  */
 class PostInstallHook
 {
+    const REGISTRY_KEY = 'cachecommand_publish_pages_last_run';
+
     /**
      * Initialize the Clear cache post processor.
      *
@@ -30,8 +32,8 @@ class PostInstallHook
         /* @var $registry Registry */
         $registry = GeneralUtility::makeInstance(Registry::class);
 
-        if (!$registry->get('tx_autoflush', AutoflushCommandController::REGISTRY_KEY)) {
-            $registry->set('tx_autoflush', AutoflushCommandController::REGISTRY_KEY, time());
+        if (!$registry->get('tx_autoflush', self::REGISTRY_KEY)) {
+            $registry->set('tx_autoflush', self::REGISTRY_KEY, time());
         }
     }
 }
