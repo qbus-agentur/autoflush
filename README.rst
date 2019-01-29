@@ -20,7 +20,7 @@ stop using the "flush frontend caches" button whenever you rename, delete, hide 
 
 .. code-block:: bash
 
-    typo3/cli_dispath.phpsh extbase extension:install autoflush
+    composer require qbus/autoflush
 
 Cache flush for time-based page publishing
 ------------------------------------------
