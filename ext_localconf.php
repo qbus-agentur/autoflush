@@ -24,7 +24,6 @@ $signalSlotDispatcher->connect(
     'afterExtensionInstall'
 );
 
-
 $resourceSignals = [
     \TYPO3\CMS\Core\Resource\ResourceStorageInterface::SIGNAL_PreFileAdd,
     \TYPO3\CMS\Core\Resource\ResourceStorageInterface::SIGNAL_PostFileAdd,

@@ -107,7 +107,7 @@ class MenuFlush
 
         if (isset($record['pid'])) {
             $cacheManager = $this->getCacheManager();
-            $cacheManager->flushCachesInGroupByTag('pages', 'menu_pid_' .  intval($this->getParentPage($table, $id, $record)));
+            $cacheManager->flushCachesInGroupByTag('pages', 'menu_pid_' . intval($this->getParentPage($table, $id, $record)));
         }
     }
 

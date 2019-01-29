@@ -1,13 +1,13 @@
 <?php
 namespace Qbus\Autoflush\Command;
 
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * ClearMenuForPulishedPagesCommand
@@ -30,9 +30,9 @@ class ClearMenuForPulishedPagesCommand extends Command
     protected $registry;
 
     /**
-     * @param string $commandName
+     * @param string       $commandName
      * @param CacheManager $cacheManager
-     * @param Registry $registry
+     * @param Registry     $registry
      */
     public function __construct(string $name = null, CacheManager $cacheManager = null, Registry $registry = null)
     {
