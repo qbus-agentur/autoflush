@@ -20,12 +20,12 @@ class ClearMenuForPulishedPagesCommand extends Command
     const REGISTRY_KEY = 'cachecommand_publish_pages_last_run';
 
     /**
-     * @var \TYPO3\CMS\Core\Cache\CacheManager
+     * @var CacheManager
      */
     protected $cacheManager;
 
     /**
-     * @var \TYPO3\CMS\Core\Registry
+     * @var Registry
      */
     protected $registry;
 
@@ -36,7 +36,7 @@ class ClearMenuForPulishedPagesCommand extends Command
      */
     public function __construct(string $name = null, CacheManager $cacheManager = null, Registry $registry = null)
     {
-        $this->cacheManager = $registry ?? GeneralUtility::makeInstance(CacheManager::class);
+        $this->cacheManager = $cacheManager ?? GeneralUtility::makeInstance(CacheManager::class);
         $this->registry = $registry ?? GeneralUtility::makeInstance(Registry::class);
         parent::__construct($name);
     }
