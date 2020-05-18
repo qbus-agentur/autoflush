@@ -1,0 +1,15 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  Qbus\Autoflush\:
+    resource: '../Classes/*'
+
+  Qbus\Autoflush\Command\ClearMenuForPulishedPagesCommand:
+   tags:
+      - name: 'console.command'
+        command: 'autoflush:clearmenuforpulishedpages'
+        schedulable: true
+
