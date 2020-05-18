@@ -29,7 +29,6 @@
         }
     },
     "replace": {
-        "autoflush": "self.version",
         "typo3-ter/autoflush": "self.version"
     }
 }
