@@ -56,7 +56,7 @@ class ClearMenuForPulishedPagesCommand extends Command
      *
      * @inheritdoc
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $current = time();
         $last = $this->registry->get('tx_autoflush', self::REGISTRY_KEY, $current);
@@ -74,6 +74,8 @@ class ClearMenuForPulishedPagesCommand extends Command
         }
 
         $this->registry->set('tx_autoflush', self::REGISTRY_KEY, $current);
+
+        return 0;
     }
 
     /**
