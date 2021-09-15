@@ -28,6 +28,11 @@
             "Qbus\\Autoflush\\": "Classes"
         }
     },
+    "extra": {
+        "typo3/cms": {
+            "extension-key": "autoflush"
+        }
+    },
     "replace": {
         "typo3-ter/autoflush": "self.version"
     }
