@@ -13,3 +13,109 @@ services:
         command: 'autoflush:clearmenuforpulishedpages'
         schedulable: true
 
+  Qbus\Autoflush\Hooks\ResourceStorageHook:
+    tags:
+      - name: event.listener
+        identifier: 'autoflush'
+        method: 'flushAll'
+        event: TYPO3\CMS\Core\Resource\Event\AfterFileAddedEvent
+      - name: event.listener
+        identifier: 'autoflush'
+        method: 'flushAll'
+        event: TYPO3\CMS\Core\Resource\Event\AfterFileCopiedEvent
+      - name: event.listener
+        identifier: 'autoflush'
+        method: 'flushAll'
+        event: TYPO3\CMS\Core\Resource\Event\AfterFileCreatedEvent
+      - name: event.listener
+        identifier: 'autoflush'
+        method: 'flushAll'
+        event: TYPO3\CMS\Core\Resource\Event\AfterFileDeletedEvent
+      - name: event.listener
+        identifier: 'autoflush'
+        method: 'flushAll'
+        event: TYPO3\CMS\Core\Resource\Event\AfterFileMovedEvent
+      - name: event.listener
+        identifier: 'autoflush'
+        method: 'flushAll'
+        event: TYPO3\CMS\Core\Resource\Event\AfterFileRenamedEvent
+      - name: event.listener
+        identifier: 'autoflush'
+        method: 'flushAll'
+        event: TYPO3\CMS\Core\Resource\Event\AfterFileReplacedEvent
+      - name: event.listener
+        identifier: 'autoflush'
+        method: 'flushAll'
+        event: TYPO3\CMS\Core\Resource\Event\AfterFileContentsSetEvent
+      - name: event.listener
+        identifier: 'autoflush'
+        method: 'flushAll'
+        event: TYPO3\CMS\Core\Resource\Event\AfterFolderAddedEvent
+      - name: event.listener
+        identifier: 'autoflush'
+        method: 'flushAll'
+        event: TYPO3\CMS\Core\Resource\Event\AfterFolderCopiedEvent
+      - name: event.listener
+        identifier: 'autoflush'
+        method: 'flushAll'
+        event: TYPO3\CMS\Core\Resource\Event\AfterFolderDeletedEvent
+      - name: event.listener
+        identifier: 'autoflush'
+        method: 'flushAll'
+        event: TYPO3\CMS\Core\Resource\Event\AfterFolderMovedEvent
+      - name: event.listener
+        identifier: 'autoflush'
+        method: 'flushAll'
+        event: TYPO3\CMS\Core\Resource\Event\AfterFolderRenamedEvent
+      - name: event.listener
+        identifier: 'autoflush'
+        method: 'flushAll'
+        event: TYPO3\CMS\Core\Resource\Event\BeforeFileAddedEvent
+      - name: event.listener
+        identifier: 'autoflush'
+        method: 'flushAll'
+        event: TYPO3\CMS\Core\Resource\Event\BeforeFileCopiedEvent
+      - name: event.listener
+        identifier: 'autoflush'
+        method: 'flushAll'
+        event: TYPO3\CMS\Core\Resource\Event\BeforeFileCreatedEvent
+      - name: event.listener
+        identifier: 'autoflush'
+        method: 'flushAll'
+        event: TYPO3\CMS\Core\Resource\Event\BeforeFileDeletedEvent
+      - name: event.listener
+        identifier: 'autoflush'
+        method: 'flushAll'
+        event: TYPO3\CMS\Core\Resource\Event\BeforeFileMovedEvent
+      - name: event.listener
+        identifier: 'autoflush'
+        method: 'flushAll'
+        event: TYPO3\CMS\Core\Resource\Event\BeforeFileRenamedEvent
+      - name: event.listener
+        identifier: 'autoflush'
+        method: 'flushAll'
+        event: TYPO3\CMS\Core\Resource\Event\BeforeFileReplacedEvent
+      - name: event.listener
+        identifier: 'autoflush'
+        method: 'flushAll'
+        event: TYPO3\CMS\Core\Resource\Event\BeforeFileContentsSetEvent
+      - name: event.listener
+        identifier: 'autoflush'
+        method: 'flushAll'
+        event: TYPO3\CMS\Core\Resource\Event\BeforeFolderAddedEvent
+      - name: event.listener
+        identifier: 'autoflush'
+        method: 'flushAll'
+        event: TYPO3\CMS\Core\Resource\Event\BeforeFolderCopiedEvent
+      - name: event.listener
+        identifier: 'autoflush'
+        method: 'flushAll'
+        event: TYPO3\CMS\Core\Resource\Event\BeforeFolderDeletedEvent
+      - name: event.listener
+        identifier: 'autoflush'
+        method: 'flushAll'
+        event: TYPO3\CMS\Core\Resource\Event\BeforeFolderMovedEvent
+      - name: event.listener
+        identifier: 'autoflush'
+        method: 'flushAll'
+        event: TYPO3\CMS\Core\Resource\Event\BeforeFolderRenamedEvent

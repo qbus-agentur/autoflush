@@ -15,6 +15,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['proc
 
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['clearCachePostProc'][] = \Qbus\Autoflush\Hooks\TablePidFlush::class . '->clearCachePostProc';
 
+if (!class_exists(TYPO3\CMS\Core\Information\Typo3Version::class)) {
 $signalSlotDispatcher = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\SignalSlot\Dispatcher::class);
 
 $signalSlotDispatcher->connect(
@@ -64,3 +65,4 @@ foreach ($resourceSignals as $signal) {
 unset($signal);
 unset($resourceSignals);
 unset($signalSlotDispatcher);
+}
