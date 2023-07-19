@@ -4,7 +4,6 @@ namespace Qbus\Autoflush\Hooks;
 
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Cache\CacheManager;
-use TYPO3\CMS\Core\Database\QueryGenerator;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -260,14 +259,6 @@ class MenuFlush
 
         /* FIXME: what to do? */
         return null;
-    }
-
-    /**
-     * @return QueryGenerator
-     */
-    protected function createQueryGenerator()
-    {
-        return GeneralUtility::makeInstance(QueryGenerator::class);
     }
 
     /**

@@ -4,7 +4,10 @@ namespace Qbus\Autoflush\Hooks;
 
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Cache\CacheManager;
-use TYPO3\CMS\Core\Database\QueryGenerator;
+use TYPO3\CMS\Core\Database\Connection;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryHelper;
+use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -82,7 +85,6 @@ class LevelMediaFlush implements SingletonInterface
             return;
         }
 
-        $queryGenerator = $this->createQueryGenerator();
         $cacheManager = $this->getCacheManager();
 
         $this->pageIdsToFlushRecursively = array_unique($this->pageIdsToFlushRecursively);
@@ -90,7 +92,7 @@ class LevelMediaFlush implements SingletonInterface
             $begin = 0;
             $depth = 1000;
             $perms_clause = '1';
-            $treeList = $queryGenerator->getTreeList($pageId, $depth, $begin, $perms_clause);
+            $treeList = $this->getTreeList($pageId, $depth, $begin, $perms_clause);
 
             $ids = GeneralUtility::trimExplode(',', $treeList, true);
             foreach ($ids as $id) {
@@ -108,11 +110,49 @@ class LevelMediaFlush implements SingletonInterface
     }
 
     /**
-     * @return QueryGenerator
+     * Recursively fetch all descendants of a given page
+     *
+     * @return string comma separated list of descendant pages
      */
-    protected function createQueryGenerator()
+    protected function getTreeList(int $id, int $depth, int $begin = 0, string $permsClause = ''): string
     {
-        return GeneralUtility::makeInstance(QueryGenerator::class);
+        if ($id < 0) {
+            $id = abs($id);
+        }
+        if ($begin === 0) {
+            $theList = (string)$id;
+        } else {
+            $theList = '';
+        }
+        if ($id && $depth > 0) {
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('pages');
+            $queryBuilder->getRestrictions()->removeAll()->add(GeneralUtility::makeInstance(DeletedRestriction::class));
+            $statement = $queryBuilder->select('uid')
+                ->from('pages')
+                ->where(
+                    $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($id, Connection::PARAM_INT)),
+                    $queryBuilder->expr()->eq('sys_language_uid', 0)
+                )
+                ->orderBy('uid');
+            if ($permsClause !== '') {
+                $queryBuilder->andWhere(QueryHelper::stripLogicalOperatorPrefix($permsClause));
+            }
+            $statement = $queryBuilder->executeQuery();
+            while ($row = $statement->fetchAssociative()) {
+                if ($begin <= 0) {
+                    $theList .= ',' . $row['uid'];
+                }
+                if ($depth > 1) {
+                    $theSubList = $this->getTreeList($row['uid'], $depth - 1, $begin - 1, $permsClause);
+                    if (!empty($theList) && !empty($theSubList) && ($theSubList[0] !== ',')) {
+                        $theList .= ',';
+                    }
+                    $theList .= $theSubList;
+                }
+            }
+        }
+
+        return $theList;
     }
 
     /**
