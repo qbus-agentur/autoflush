@@ -1,4 +1,5 @@
 <?php
+
 namespace Qbus\Autoflush\Hooks\Frontend;
 
 use TYPO3\CMS\Core\SingletonInterface;
@@ -16,7 +17,7 @@ class RegisterMenuTags implements AbstractMenuFilterPagesHookInterface, Singleto
     /**
      * @var array
      */
-    protected $tags = array();
+    protected $tags = [];
 
     /**
      * Register tags for rendered menu's.
@@ -38,16 +39,16 @@ class RegisterMenuTags implements AbstractMenuFilterPagesHookInterface, Singleto
         $criterion = $this->getMenuCriterion($data);
 
         switch ($criterion) {
-        case 'pid':
-            if (!isset($data['pid'])) {
-                return true;
-            }
-            $tag = 'menu_pid_' . $data['pid'];
-            if (!in_array($tag, $this->tags)) {
-                $GLOBALS['TSFE']->addCacheTags(array($tag));
-                $this->tags[] = $tag;
-            }
-            break;
+            case 'pid':
+                if (!isset($data['pid'])) {
+                    return true;
+                }
+                $tag = 'menu_pid_' . $data['pid'];
+                if (!in_array($tag, $this->tags)) {
+                    $GLOBALS['TSFE']->addCacheTags([$tag]);
+                    $this->tags[] = $tag;
+                }
+                break;
         }
 
         /* Always return true since we do not want to influence menu rendering */

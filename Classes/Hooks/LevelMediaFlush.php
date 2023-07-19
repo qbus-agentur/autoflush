@@ -1,8 +1,12 @@
 <?php
+
 namespace Qbus\Autoflush\Hooks;
 
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Cache\CacheManager;
+use TYPO3\CMS\Core\Database\QueryGenerator;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -11,12 +15,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @author Benjamin Franzke <bfr@qbus.de>
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class LevelMediaFlush implements \TYPO3\CMS\Core\SingletonInterface
+class LevelMediaFlush implements SingletonInterface
 {
     /**
      * @var array
      */
-    protected $pageIdsToFlushRecursively = array();
+    protected $pageIdsToFlushRecursively = [];
 
     /**
      * Hook executed after the DataHandler performed one database operation
@@ -26,7 +30,6 @@ class LevelMediaFlush implements \TYPO3\CMS\Core\SingletonInterface
      * @param  int|string  $id
      * @param  array       $fieldArray
      * @param  DataHandler $dataHandler
-     * @return void
      */
     public function processDatamap_afterDatabaseOperations(
         $status,
@@ -35,7 +38,6 @@ class LevelMediaFlush implements \TYPO3\CMS\Core\SingletonInterface
         &$fieldArray,
         DataHandler $dataHandler
     ) {
-
         /* pages.media changes when a new image is added or an existing is removed */
         if ($table === 'pages' && $status === 'update' && isset($fieldArray['media'])) {
             $this->pageIdsToFlushRecursively[] = $id;
@@ -56,13 +58,13 @@ class LevelMediaFlush implements \TYPO3\CMS\Core\SingletonInterface
 
             $fileReference = BackendUtility::getRecord(
                 'sys_file_reference',
-                intval($id),
+                (int)$id,
                 'uid_foreign',
                 " AND tablenames = 'pages' AND fieldname = 'media' AND table_local = 'sys_file'"
             );
 
             if ($fileReference) {
-                $this->pageIdsToFlushRecursively[] = intval($fileReference['uid_foreign']);
+                $this->pageIdsToFlushRecursively[] = (int)($fileReference['uid_foreign']);
             }
         }
     }
@@ -74,7 +76,7 @@ class LevelMediaFlush implements \TYPO3\CMS\Core\SingletonInterface
      */
     public function processDatamap_afterAllOperations(DataHandler $dataHandler)
     {
-        $cumulatedPageIds = array();
+        $cumulatedPageIds = [];
 
         if (empty($this->pageIdsToFlushRecursively)) {
             return;
@@ -102,22 +104,22 @@ class LevelMediaFlush implements \TYPO3\CMS\Core\SingletonInterface
         }
 
         /* Since this hook is called multiple times, clear the pageIds to not clear twice */
-        $this->pageIdsToFlushRecursively = array();
+        $this->pageIdsToFlushRecursively = [];
     }
 
     /**
-     * @return \TYPO3\CMS\Core\Database\QueryGenerator
+     * @return QueryGenerator
      */
     protected function createQueryGenerator()
     {
-        return GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\QueryGenerator::class);
+        return GeneralUtility::makeInstance(QueryGenerator::class);
     }
 
     /**
-     * @return \TYPO3\CMS\Core\Cache\CacheManager;
+     * @return CacheManager ;
      */
     protected function getCacheManager()
     {
-        return GeneralUtility::makeInstance(\TYPO3\CMS\Core\Cache\CacheManager::class);
+        return GeneralUtility::makeInstance(CacheManager::class);
     }
 }

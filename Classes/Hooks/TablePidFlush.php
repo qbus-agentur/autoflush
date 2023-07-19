@@ -1,7 +1,9 @@
 <?php
+
 namespace Qbus\Autoflush\Hooks;
 
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -34,7 +36,6 @@ class TablePidFlush
      *
      * @param  array       $params
      * @param  DataHandler $dataHandler
-     * @return void
      */
     public function clearCachePostProc(array $params, DataHandler $dataHandler)
     {
@@ -54,10 +55,10 @@ class TablePidFlush
     }
 
     /**
-     * @return \TYPO3\CMS\Core\Cache\CacheManager;
+     * @return CacheManager
      */
     protected function getCacheManager()
     {
-        return GeneralUtility::makeInstance(\TYPO3\CMS\Core\Cache\CacheManager::class);
+        return GeneralUtility::makeInstance(CacheManager::class);
     }
 }

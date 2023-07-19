@@ -1,7 +1,10 @@
 <?php
+
 namespace Qbus\Autoflush\Hooks;
 
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Cache\CacheManager;
+use TYPO3\CMS\Core\Database\QueryGenerator;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -19,13 +22,12 @@ class MenuFlush
     /**
      * @var array
      */
-    protected $tags = array();
+    protected $tags = [];
 
     /**
      * @param  string      $table
      * @param  int|string  $id
      * @param  array       $fields
-     * @return void
      */
     protected function onUpdate(string $table, $id, array $fields)
     {
@@ -42,7 +44,7 @@ class MenuFlush
         }
 
         if ($changed) {
-            $this->tags[] = 'menu_pid_' . intval($this->getParentPage($table, $id, $fields));
+            $this->tags[] = 'menu_pid_' . (int)($this->getParentPage($table, $id, $fields));
         }
 
         if (isset($fields['extend_to_subpages'])) {
@@ -54,7 +56,6 @@ class MenuFlush
      * @param  string      $table
      * @param  int|string  $id
      * @param  array       $fields
-     * @return void
      */
     protected function onAdd(string $table, $id, array $fields)
     {
@@ -67,7 +68,7 @@ class MenuFlush
         }
 
         if (isset($fields['pid'])) {
-            $this->tags[] = 'menu_pid_' . intval($this->getParentPage($table, $id, $fields));
+            $this->tags[] = 'menu_pid_' . (int)($this->getParentPage($table, $id, $fields));
         }
     }
 
@@ -75,7 +76,6 @@ class MenuFlush
      * @param  string  $table
      * @param  int     $id
      * @param  array   $record
-     * @return void
      */
     protected function onDelete(string $table, $id, array $record)
     {
@@ -89,7 +89,7 @@ class MenuFlush
 
         if (isset($record['pid'])) {
             $cacheManager = $this->getCacheManager();
-            $cacheManager->flushCachesInGroupByTag('pages', 'menu_pid_' . intval($this->getParentPage($table, $id, $record)));
+            $cacheManager->flushCachesInGroupByTag('pages', 'menu_pid_' . (int)($this->getParentPage($table, $id, $record)));
         }
     }
 
@@ -101,7 +101,6 @@ class MenuFlush
      * @param  int|string  $id
      * @param  array       $fields
      * @param  DataHandler $dataHandler
-     * @return void
      */
     public function processDatamap_afterDatabaseOperations(
         $status,
@@ -115,12 +114,12 @@ class MenuFlush
         }
 
         switch ($status) {
-        case 'update':
-            $this->onUpdate($table, $id, $fields);
-            break;
-        case 'new':
-            $this->onAdd($table, $id, $fields);
-            break;
+            case 'update':
+                $this->onUpdate($table, $id, $fields);
+                break;
+            case 'new':
+                $this->onAdd($table, $id, $fields);
+                break;
         }
     }
 
@@ -152,7 +151,6 @@ class MenuFlush
      * @param  string      $value
      * @param  DataHandler $dataHandler
      * @param  array       $pasteUpdate
-     * @return void
      */
     public function processCmdmap_preProcess(
         $command,
@@ -167,25 +165,25 @@ class MenuFlush
         }
 
         switch ($command) {
-        case 'move':
-            /* Flush the current pid */
-            $page = BackendUtility::getRecord('pages', $id, 'pid');
-            if ($page) {
-                $this->tags[] = 'menu_pid_' . intval($page['pid']);
-            }
-
-            /* Flush the dest pid.
-             * $value <0   move behind record with uid=abs($value)
-             * $value >=0  move to page with uid=$value */
-            if ($value < 0) {
-                $page = BackendUtility::getRecord('pages', -$value, 'pid');
+            case 'move':
+                /* Flush the current pid */
+                $page = BackendUtility::getRecord('pages', $id, 'pid');
                 if ($page) {
-                    $this->tags[] = 'menu_pid_' . intval($page['pid']);
+                    $this->tags[] = 'menu_pid_' . (int)($page['pid']);
                 }
-            } else {
-                $this->tags[] = 'menu_pid_' . intval($value);
-            }
-            break;
+
+                /* Flush the dest pid.
+                 * $value <0   move behind record with uid=abs($value)
+                 * $value >=0  move to page with uid=$value */
+                if ($value < 0) {
+                    $page = BackendUtility::getRecord('pages', -$value, 'pid');
+                    if ($page) {
+                        $this->tags[] = 'menu_pid_' . (int)($page['pid']);
+                    }
+                } else {
+                    $this->tags[] = 'menu_pid_' . (int)$value;
+                }
+                break;
         }
     }
 
@@ -225,7 +223,7 @@ class MenuFlush
             $cacheManager->flushCachesInGroupByTag('pages', $tag);
         }
 
-        $this->tags = array();
+        $this->tags = [];
     }
 
     /**
@@ -239,10 +237,10 @@ class MenuFlush
      * @param  array    $record
      * @return int|null
      */
-    protected function getParentPage($table, $id, $record = array())
+    protected function getParentPage($table, $id, $record = [])
     {
         if (!isset($record['pid'])) {
-            $record = BackendUtility::getRecord($table, intval($id), 'pid');
+            $record = BackendUtility::getRecord($table, (int)$id, 'pid');
             if (!$record) {
                 /* FIXME: what to do? */
                 return null;
@@ -265,18 +263,18 @@ class MenuFlush
     }
 
     /**
-     * @return \TYPO3\CMS\Core\Database\QueryGenerator
+     * @return QueryGenerator
      */
     protected function createQueryGenerator()
     {
-        return GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\QueryGenerator::class);
+        return GeneralUtility::makeInstance(QueryGenerator::class);
     }
 
     /**
-     * @return \TYPO3\CMS\Core\Cache\CacheManager;
+     * @return CacheManager ;
      */
     protected function getCacheManager()
     {
-        return GeneralUtility::makeInstance(\TYPO3\CMS\Core\Cache\CacheManager::class);
+        return GeneralUtility::makeInstance(CacheManager::class);
     }
 }

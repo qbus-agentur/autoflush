@@ -1,6 +1,8 @@
 <?php
+
 namespace Qbus\Autoflush\Hooks;
 
+use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -11,9 +13,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class ResourceStorageHook
 {
-    /**
-     * @return void
-     */
     public function flushAll()
     {
         $cacheManager = $this->getCacheManager();
@@ -22,10 +21,10 @@ class ResourceStorageHook
     }
 
     /**
-     * @return \TYPO3\CMS\Core\Cache\CacheManager
+     * @return CacheManager
      */
     protected function getCacheManager()
     {
-        return GeneralUtility::makeInstance(\TYPO3\CMS\Core\Cache\CacheManager::class);
+        return GeneralUtility::makeInstance(CacheManager::class);
     }
 }

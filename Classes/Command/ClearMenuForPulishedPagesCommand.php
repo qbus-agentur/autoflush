@@ -1,4 +1,5 @@
 <?php
+
 namespace Qbus\Autoflush\Command;
 
 use Symfony\Component\Console\Command\Command;
@@ -17,7 +18,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class ClearMenuForPulishedPagesCommand extends Command
 {
-    const REGISTRY_KEY = 'cachecommand_publish_pages_last_run';
+    public const REGISTRY_KEY = 'cachecommand_publish_pages_last_run';
 
     /**
      * @var CacheManager
@@ -43,7 +44,6 @@ class ClearMenuForPulishedPagesCommand extends Command
 
     /**
      * Defines the description for this command
-     * @return void
      */
     protected function configure()
     {
@@ -62,7 +62,7 @@ class ClearMenuForPulishedPagesCommand extends Command
         $last = $this->registry->get('tx_autoflush', self::REGISTRY_KEY, $current);
 
         $pages = $this->findPagesPublishedBetween($last, $current);
-        $pids = array();
+        $pids = [];
         if ($pages) {
             foreach ($pages as $page) {
                 $pids[$page['pid']] = $page['pid'];

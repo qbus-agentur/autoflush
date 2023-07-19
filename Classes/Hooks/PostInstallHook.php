@@ -1,4 +1,5 @@
 <?php
+
 namespace Qbus\Autoflush\Hooks;
 
 use TYPO3\CMS\Core\Registry;
@@ -13,14 +14,13 @@ use TYPO3\CMS\Extensionmanager\Utility\InstallUtility;
  */
 class PostInstallHook
 {
-    const REGISTRY_KEY = 'cachecommand_publish_pages_last_run';
+    public const REGISTRY_KEY = 'cachecommand_publish_pages_last_run';
 
     /**
      * Initialize the Clear cache post processor.
      *
      * @param  string         $extensionKey
      * @param  InstallUtility $installUtility
-     * @return void
      */
     public function afterExtensionInstall($extensionKey, InstallUtility $installUtility)
     {
