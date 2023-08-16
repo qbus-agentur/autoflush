@@ -63,7 +63,7 @@ class LevelMediaFlush implements SingletonInterface
                 'sys_file_reference',
                 (int)$id,
                 'uid_foreign',
-                " AND tablenames = 'pages' AND fieldname = 'media' AND table_local = 'sys_file'"
+                " AND tablenames = 'pages' AND fieldname = 'media'"
             );
 
             if ($fileReference) {
